@@ -91,6 +91,7 @@ send, ^!+7 ;[focus on effect panel]
 sendinput, ^b ;[select find box]
 return
 
+
 ;----------------------------------------------;
 ;                                              ;
 ;                 Windows                      ;
@@ -98,21 +99,51 @@ return
 ;----------------------------------------------;
 
 
-;INSTANT APPLICATION SWITCHER KEYS
+;INSTANT APPLICATION SWITCHER KEYS - Start
 #IfWinActive
 ;ctrl numpad1 -> Mapped to mouse
 ^Numpad1::switchToPremiere()
 ;ctrl numpad2 -> Mapped to mouse
 ^Numpad2::switchToFileExplorer()
 ;ctrl numpad3 -> Mapped to mouse
-^Numpad3::switchToChrome()
+;^Numpad3::switchToChrome()
 ;ctrl numpad4 -> Mapped to mouse
 ^Numpad4::switchToAsana()
 ;ctrl numpad5 -> Mapped to mouse
 ^Numpad5::switchToSlack()
 
+;INSTANT GOOGLE SEARCH
+^+F12::
+InputBox, searchQuery, Google Search, Enter your search., , 250, 130
+Clipboard := searchQuery
+if (ErrorLevel == 1){
+    ;User pressed cancel
+    return
+}
+Else
+{
+    ;User submitted input
+    switchToChrome()
+    Sleep, 250
+    ;Create new tab
+    SendInput, ^t
+    Sleep, 10
+    SendInput, ^v
+    SendInput, {Enter}
+    return
+
+}
+
+
+
+;Go to text location
+;paste text
+;press enter
+
+;INSTANT APPLICATION SWITCHER KEYS - End
+
 ;OPEN PROJECT AT CURSOR
-^+F2::
+^F2::
 CoordMode, Mouse, Relative
 ;Open "Main" project folder
 SendInput {LButton}
@@ -138,6 +169,44 @@ Return
 
 ;RENAME AND OPEN PREMIERE PROJECT
 ^+F2::
+BlockInput, MouseMove ;Block mouse movement
+CoordMode, Mouse, Relative
+;Select "Main" project folder
+SendInput {LButton}
+;Highlight & copy the name of the "Main" project folder
+SendInput {F2}
+SendInput ^c
+Sleep, 10
+;Open "Main" project folder
+SendInput {LButton}
+SendInput {LButton}
+;Wait for window to open
+;Keeping this high allows time for window to open as to not click on an laready open window of explorer
+Sleep, 1200
+;Move Mouse to location of "Project Files" folder
+MouseMove, 200, 305, 0
+;tippy("cursor over Project Files Folder", 2) ;DEBUGGING
+Sleep, 100
+;Open the "Projects folder"
+SendInput {LButton}
+SendInput {LButton}
+;Move Mouse to location of Premiere Pro Project file
+MouseMove, 200, 215, 0
+Sleep, 50
+;tippy("cursor over Premiere Pro Project file", 2) ;DEBUGGING
+;Select, highlight, and rename Premiere Pro project
+SendInput {LButton}
+SendInput {F2}
+Sleep, 10
+SendInput ^v
+SendInput {Enter}
+;Open "Project Files" folder
+SendInput {Enter}
+BlockInput, MouseMoveOff ;Enable mouse movement
+Return
+
+;RENAME, OPEN, & IMPORT PREMIERE PROJECT
+^+!F2::
 BlockInput, MouseMove ;Block mouse movement
 CoordMode, Mouse, Relative
 ;Select "Main" project folder
