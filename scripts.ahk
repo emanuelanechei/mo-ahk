@@ -111,63 +111,65 @@ return
 ;ctrl numpad5 -> Mapped to mouse
 ^Numpad5::switchToSlack()
 
-;Open project in folder that cursor is hovering over
+;OPEN PROJECT AT CURSOR
 ^+F2::
 CoordMode, Mouse, Relative
+;Open "Main" project folder
 SendInput {LButton}
-SendInput {LButton} ;double click to open “main” folder
-
+SendInput {LButton}
 ;Wait for window to open
-Sleep, 50
-
+;Keeping this high allows time for window to open as to not click on an laready open window of explorer
+Sleep, 250
 ;Move Mouse to location of "Project Files" folder
 MouseMove, 200, 305, 0
-tippy("cursor over Project Files Folder", 1) ;DEBUGGING
-
+;tippy("cursor over Project Files Folder", 1) ;DEBUGGING
 ;Open "Project Files" folder
 SendInput {LButton}
-SendInput {LButton} ;double click to open “main” folder
-
-Sleep, 50
-
+SendInput {LButton}
+Sleep, 30
 ;Move Mouse to location of Premiere Pro project
 MouseMove, 200, 215, 0
+Sleep 30
 ;tippy("cursor over Premiere Pro Project", 1) ;DEBUGGING
-
 ;Open Premiere Pro project
 SendInput {LButton}
-SendInput {LButton} ;double click to open premiere pro project
+SendInput {LButton}
 Return
 
-; ^F2::
-; SendInput {LButton}
-; Sleep, 10
-; SendInput, {F2} ;highlight folder name
-; Send ^c ;copy project folder name
-; SendInput {LButton}
-; SendInput {LButton} ;double click to open “main” folder
-; ;MsgBox, contents of clipboard is %Clipboard% ; DEBUG: Prints the correct message
-; ;Class of windows file explorer window and name of specific window that'll be open
-; if (waitForWinToOpen("CabinetWClass", "_contentsOfClipboard") == 0)
-; {
-;     ;Function returns 0 - meaning error
-;     MsgBox, unable to run function properly
-;     return
-
-; } 
-; else
-; {
-;     ;Function returns 1 - meaning NO error
-
-; }
-
-; ;Move mouse to project files - based on window location because window could be anywhere on screen
-; tippy(mouse is on project files, 3)
-
-; ; SendInput {LButton}
-; ; SendInput {LButton} ;double click to open “project files” folder
-; ; ;Move mouse to premiere pro file 
-; ; SendInput {LButton} ;select project file at mouse location
-; ; Send F2 ;highlight project file name
-; ; Send ^v ;paste project folder name
-; ; return
+;RENAME AND OPEN PREMIERE PROJECT
+^F2::
+BlockInput, MouseMove ;Block mouse movement
+CoordMode, Mouse, Relative
+;Select "Main" project folder
+SendInput {LButton}
+;Highlight & copy the name of the "Main" project folder
+SendInput {F2}
+SendInput ^c
+Sleep, 10
+;Open "Main" project folder
+SendInput {LButton}
+SendInput {LButton}
+;Wait for window to open
+;Keeping this high allows time for window to open as to not click on an laready open window of explorer
+Sleep, 1200
+;Move Mouse to location of "Project Files" folder
+MouseMove, 200, 305, 0
+;tippy("cursor over Project Files Folder", 2) ;DEBUGGING
+Sleep, 100
+;Open the "Projects folder"
+SendInput {LButton}
+SendInput {LButton}
+;Move Mouse to location of Premiere Pro Project file
+MouseMove, 200, 215, 0
+Sleep, 50
+;tippy("cursor over Premiere Pro Project file", 2) ;DEBUGGING
+;Select, highlight, and rename Premiere Pro project
+SendInput {LButton}
+SendInput {F2}
+Sleep, 10
+SendInput ^v
+SendInput {Enter}
+;Open "Project Files" folder
+SendInput {Enter}
+BlockInput, MouseMoveOff ;Enable mouse movement
+Return
