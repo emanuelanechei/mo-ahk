@@ -44,7 +44,7 @@ switchToFileExplorer() {
 
 switchToAsana() {
 	IfWinNotExist, ahk_exe Asana.exe
-		Run, Asana.exe
+		Run, Asana.exe, C:\Users\morga\AppData\Local\Asana
 	if WinActive("ahk_exe Asana.exe")
 		Sendinput ^{tab}
 	else WinActivate ahk_exe Asana.exe
@@ -53,7 +53,7 @@ switchToAsana() {
 
 switchToSlack() {
 	IfWinNotExist, ahk_exe slack.exe
-		Run, slack.exe
+		Run, slack.exe, C:\Users\morga\AppData\Local\slack
 	if WinActive("ahk_exe slack.exe")
 		Sendinput ^{tab}
 	else WinActivate ahk_exe slack.exe
@@ -61,66 +61,70 @@ switchToSlack() {
 }
 ;INSTANT APPLICATION SWITCHER FUNCTIONS - END
 
-
+;KNOWN FLAWS
+;	- Hasn't been tested with something other than _contentsOfClipboard
 ;TODO
- waitForWinToOpen(ahkClass, nameOfWindow:="") {
+waitForWinToOpen(ahkClass, nameOfWindow:="") {
 	
 	waitCounter = 0
 
 	;MsgBox, The class is %ahkClass% and the name is %nameOfWindow% ;DEBUGGING
 
 	 ;Check if nameOfWindow was given
-	 if (nameOfWindow == "_contentsOfClipboard")
- 		{
-	 	;No nameOfWindow was given
-	 	isNameOfWinGiven := false
+	if (nameOfWindow == "")
+	{
+		;No nameOfWindow was given
+		isNameOfWinGiven := false
+		;MsgBox, nameOfWindow wasn't given
+	}
+	else if (nameOfWindow == "_contentsOfClipboard")
+	{
+	 	;Function call is requesting the contents of the clipboard as a nameOfWindow
+	 	isNameOfWinGiven := true
 		nameOfWindow = %Clipboard%
 		;MsgBox, name is %nameOfWindow% ;DEBUGGING
-	 }
-	 
-	 if (nameOfWindow == "")
-	 {
-		MsgBox, nameOfWindow wasn't given
-	 }
+	}
+	else
+	{
+		isNameOfWinGiven = true
+	}
 
-	 
+	;Begin waiting for the window to open
+	loop
+	{
+		;If we've waited 30ms * 50 = 1.5s --> break out the loop
+		if (waitCounter > 50)
+		{
+			;retun 1 meaning error
+			MsgBox, waitCounter is greater than 50
+			return 1
+		}
 
-	; ;Begin waiting for the window to open
- 	; loop
-	; {
-	; 	;If we've waited 30ms * 50 = 1.5s --> break out the loop
-	; 	if (waitCounter > 50)
-	; 	{
-	; 		tippy(Waited too long OR Window name/class was incorrect, 5)
-	; 		;retun 1 meaning error
-	; 		return 1
-	; 	}
+		Sleep, 10 ;Wait 30ms for the window to open
 
-	; 	Sleep, 30 ;Wait 30ms for the window to open
-
-	; 	; If nameOfWindow was NOT given
-	; 	if (nameOfWindow == "")
-	; 	{
-	; 		;Check if window with the class exists
-	; 		if WinActive(%ahkClass% && )
-	; 		{
-	; 			tippy(Window is open, 1)
-	; 			waitCounter++
-	; 			break
-	; 		}
-	; 	}
-	; 	; If nameOfWindow was given
-	; 	else
-	; 	{
-			;Check if window with the name exists
-	; 		if WinActive(%isNameOfWinGiven%)
-	; 		{
-	; 			tippy(Window is open, 1)
-	; 			waitCounter++
-	; 			break
-	; 		}
-	; 		
-	; 	}
-	; }
-	; return 0	
+		; If nameOfWindow was NOT given
+		if (isNameOfWinGiven)
+		{
+			;Check if window with the given class is active yet
+			if WinActive(%ahkClass%)
+			{
+				Msgbox, Window by class is open.  Wait counter is %waitCounter%
+				waitCounter++
+				return 0
+			}
+		}
+		; If nameOfWindow was given
+		else
+		{
+			;Check if window with the name is active yet
+			if WinActive(nameOfWindow)
+			{
+				Msgbox, Window by name is open. Wait counter is %waitCounter%
+				waitCounter++
+				return 0
+			}
+		}
+	}
+	MsgBox, You should never reach this code
+	return 1 ;We should never get here
  }
