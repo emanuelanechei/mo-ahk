@@ -137,7 +137,7 @@ SendInput {LButton}
 Return
 
 ;RENAME AND OPEN PREMIERE PROJECT
-^F2::
+^+F2::
 BlockInput, MouseMove ;Block mouse movement
 CoordMode, Mouse, Relative
 ;Select "Main" project folder
@@ -171,5 +171,18 @@ SendInput ^v
 SendInput {Enter}
 ;Open "Project Files" folder
 SendInput {Enter}
+;Wait 15s for Premiere Project to open
+;Sleep, 15000
+;Move Mouse to & select "Workspaces" icon
+;MouseMove, 1810, 70, 0
+;SendInput {LButton}
+;Sleep, 10
+
+;Move Mouse to & select "Vertical Video" Workspace
+;MouseMove, 20, 465, 0
+;SendInput {LButton}
+;Sleep, 10
+
+;tippy("Cursor over Workspaces icon", 2)
 BlockInput, MouseMoveOff ;Enable mouse movement
 Return
