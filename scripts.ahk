@@ -113,32 +113,33 @@ return
 ^Numpad5::switchToSlack()
 
 ;INSTANT GOOGLE SEARCH
-^+F12::
-InputBox, searchQuery, Google Search, Enter your search., , 250, 130
-Clipboard := searchQuery
-if (ErrorLevel == 1){
-    ;User pressed cancel
-    return
-}
-Else
-{
-    ;User submitted input
-    switchToChrome()
-    Sleep, 250
-    ;Create new tab
-    SendInput, ^t
-    Sleep, 10
-    SendInput, ^v
-    SendInput, {Enter}
-    return
+^+!g::
+switchToChrome()
+Sleep, 250
+;Create new tab
+SendInput, ^t
+Sleep, 10
+return
 
-}
-
-
-
-;Go to text location
-;paste text
-;press enter
+;OLD CODE - Allows input and pastes input into google search
+; InputBox, searchQuery, Google Search, Enter your search., , 250git , 130
+; Clipboard := searchQuery
+; if (ErrorLevel == 1){
+;     ;User pressed cancel
+;     return
+; }
+; Else
+; {
+;     ;User submitted input
+;     switchToChrome()
+;     Sleep, 250
+;     ;Create new tab
+;     SendInput, ^t
+;     Sleep, 10
+;     SendInput, ^v
+;     SendInput, {Enter}
+;     return
+; }
 
 ;INSTANT APPLICATION SWITCHER KEYS - End
 
