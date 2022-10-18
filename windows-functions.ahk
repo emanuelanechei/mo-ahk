@@ -60,3 +60,28 @@ switchToSlack() {
 	return
 }
 ;INSTANT APPLICATION SWITCHER FUNCTIONS - END
+
+;Find adobe premiere pro file in file explorer folder
+findPremiereProFileImg(){
+	ImageSearch, OutputVarX, OutputVarY, 0, 0, 410, 510, C:\mo-ahk\support-files\adobe-premiere-pro.png
+	if (ErrorLevel == 0)
+	{
+		;Move Mouse to where the project was found
+		MouseMove, OutputVarX+10, OutputVarY+10, 0
+		;tippy("Cursor over Premiere Pro Project", 1) ;DEBUGGING
+		;MsgBox, found image at x: %OutputVarX% and y: %OutputVarY% ;DEBUGGING
+		;Open Premiere Pro project
+		Sleep 50
+		return 0
+	}
+	Else if (ErrorLevel == 1)
+	{
+		tippy("Unable to find image", 2)
+		return 1
+	}
+	Else
+	{
+		tippy("Problem prevented search", 2)
+		return 2
+	}
+}

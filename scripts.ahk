@@ -151,22 +151,21 @@ SendInput {LButton}
 SendInput {LButton}
 ;Wait for window to open
 ;Keeping this high allows time for window to open as to not click on an laready open window of explorer
-Sleep, 250
+Sleep, 400
 ;Move Mouse to location of "Project Files" folder
 MouseMove, 200, 305, 0
 ;tippy("cursor over Project Files Folder", 1) ;DEBUGGING
 ;Open "Project Files" folder
 SendInput {LButton}
 SendInput {LButton}
-Sleep, 30
+Sleep, 300
+
 ;Move Mouse to location of Premiere Pro project
-MouseMove, 200, 215, 0
-Sleep 30
-;tippy("cursor over Premiere Pro Project", 1) ;DEBUGGING
-;Open Premiere Pro project
-SendInput {LButton}
-SendInput {LButton}
-Return
+if (findPremiereProFileImg() == 0)
+{
+    Click, 2
+}
+return
 
 ;RENAME AND OPEN PREMIERE PROJECT
 ^+F2::
@@ -192,17 +191,20 @@ Sleep, 100
 SendInput {LButton}
 SendInput {LButton}
 ;Move Mouse to location of Premiere Pro Project file
-MouseMove, 200, 215, 0
-Sleep, 50
-;tippy("cursor over Premiere Pro Project file", 2) ;DEBUGGING
-;Select, highlight, and rename Premiere Pro project
-SendInput {LButton}
-SendInput {F2}
-Sleep, 10
-SendInput ^v
-SendInput {Enter}
-;Open "Project Files" folder
-SendInput {Enter}
+;Move Mouse to location of Premiere Pro project
+if (findPremiereProFileImg() == 0)
+{
+    ;tippy("cursor over Premiere Pro Project file", 2) ;DEBUGGING
+    ;Select, highlight, and rename Premiere Pro project
+    SendInput {LButton}
+    SendInput {F2}
+    Sleep, 10
+    SendInput ^v
+    SendInput {Enter}
+    ;Open "Project Files" folder
+    SendInput {Enter}
+    
+}
 BlockInput, MouseMoveOff ;Enable mouse movement
 Return
 
