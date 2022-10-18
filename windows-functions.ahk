@@ -76,12 +76,12 @@ findPremiereProFileImg(){
 	}
 	Else if (ErrorLevel == 1)
 	{
-		tippy("Unable to find image", 2)
+		tippy("Unable to find Premiere Pro File image", 2)
 		return 1
 	}
 	Else
 	{
-		tippy("Problem prevented search", 2)
+		tippy("Problem prevented Premiere Pro File image search", 2)
 		return 2
 	}
 }

@@ -98,7 +98,7 @@ return
 ;                                              ;
 ;----------------------------------------------;
 
-
+;----------------------------------------------------------------------
 ;INSTANT APPLICATION SWITCHER KEYS - Start
 #IfWinActive
 ;ctrl numpad1 -> Mapped to mouse
@@ -142,32 +142,60 @@ return
 ; }
 
 ;INSTANT APPLICATION SWITCHER KEYS - End
+;----------------------------------------------------------------------
 
+
+;----------------------------------------------------------------------
 ;OPEN PROJECT AT CURSOR
 ^F2::
+BlockInput, MouseMove ;Block mouse movement
 CoordMode, Mouse, Relative
 ;Open "Main" project folder
-SendInput {LButton}
-SendInput {LButton}
-;Wait for window to open
-;Keeping this high allows time for window to open as to not click on an laready open window of explorer
-Sleep, 400
-;Move Mouse to location of "Project Files" folder
-MouseMove, 200, 305, 0
-;tippy("cursor over Project Files Folder", 1) ;DEBUGGING
+Click, 2
+;Wait for File Explorer Window to be active
+WinWaitActive , ahk_class CabinetWClass, ,2
+;Wait a little longer for File Explorer GUI to load for ImageSearch
+Sleep, 200 
+;tippy("Correct window is active", 2) ;DEBUGGING
+;Search for "Project Files" folder
+ImageSearch, OutputVarX, OutputVarY, 0, 0, 410, 510, *2 C:\mo-ahk\support-files\project-files-folder.png
+if (ErrorLevel == 0)
+{
+    ;Move mouse to where the project file was found
+    MouseMove, OutputVarX+10, OutputVarY+10, 0
+    ;tippy("cursor over Project Files Folder", 2) ;DEBUGGING
+    ;MsgBox, found image at x: %OutputVarX% and y: %OutputVarY% ;DEBUGGING
+}
+Else if (ErrorLevel == 1)
+{
+    tippy("Unable to find Project File Folder image", 2)
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
+Else
+{
+    tippy("Problem prevented Project File Folder search", 2)
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
+;tippy("Cursor over Project Files Folder", 1) ;DEBUGGING
 ;Open "Project Files" folder
-SendInput {LButton}
-SendInput {LButton}
-Sleep, 300
-
-;Move Mouse to location of Premiere Pro project
+Click, 2
+Sleep, 100
+;Search for Premiere Pro Project
 if (findPremiereProFileImg() == 0)
 {
+    ;Open Premiere Pro Project
     Click, 2
 }
+BlockInput, MouseMoveOff ;Enable mouse movement
 return
+;----------------------------------------------------------------------
 
+
+;----------------------------------------------------------------------
 ;RENAME AND OPEN PREMIERE PROJECT
+
 ^+F2::
 BlockInput, MouseMove ;Block mouse movement
 CoordMode, Mouse, Relative
@@ -178,20 +206,38 @@ SendInput {F2}
 SendInput ^c
 Sleep, 10
 ;Open "Main" project folder
-SendInput {LButton}
-SendInput {LButton}
-;Wait for window to open
-;Keeping this high allows time for window to open as to not click on an laready open window of explorer
-Sleep, 1200
-;Move Mouse to location of "Project Files" folder
-MouseMove, 200, 305, 0
-;tippy("cursor over Project Files Folder", 2) ;DEBUGGING
-Sleep, 100
+Click, 2
+;Wait for File Explorer Window to be active
+WinWaitActive , ahk_class CabinetWClass, ,2
+;Wait a little longer for File Explorer GUI to load for ImageSearch
+Sleep, 200 
+;tippy("Correct window is active", 2) ;DEBUGGING
+;Search for "Project Files" folder
+ImageSearch, OutputVarX, OutputVarY, 0, 0, 410, 510, *2 C:\mo-ahk\support-files\project-files-folder.png
+if (ErrorLevel == 0)
+{
+    ;Move mouse to where the project file was found
+    MouseMove, OutputVarX+10, OutputVarY+10, 0
+    ;tippy("cursor over Project Files Folder", 2) ;DEBUGGING
+    ;MsgBox, found image at x: %OutputVarX% and y: %OutputVarY% ;DEBUGGING
+}
+Else if (ErrorLevel == 1)
+{
+    tippy("Unable to find Project File Folder image", 2)
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
+Else
+{
+    tippy("Problem prevented Project File Folder search", 2)
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
 ;Open the "Projects folder"
-SendInput {LButton}
-SendInput {LButton}
-;Move Mouse to location of Premiere Pro Project file
-;Move Mouse to location of Premiere Pro project
+Click, 2
+;Wait for folder to open
+Sleep, 100
+;Search for Premiere Pro Project
 if (findPremiereProFileImg() == 0)
 {
     ;tippy("cursor over Premiere Pro Project file", 2) ;DEBUGGING
@@ -201,13 +247,16 @@ if (findPremiereProFileImg() == 0)
     Sleep, 10
     SendInput ^v
     SendInput {Enter}
-    ;Open "Project Files" folder
+    ;Open Premiere Pro Project
     SendInput {Enter}
     
 }
 BlockInput, MouseMoveOff ;Enable mouse movement
 Return
+;----------------------------------------------------------------------
 
+
+;----------------------------------------------------------------------
 ;RENAME, OPEN, & IMPORT PREMIERE PROJECT
 ^+!F2::
 BlockInput, MouseMove ;Block mouse movement
@@ -258,3 +307,4 @@ SendInput {Enter}
 ;tippy("Cursor over Workspaces icon", 2)
 BlockInput, MouseMoveOff ;Enable mouse movement
 Return
+;----------------------------------------------------------------------
