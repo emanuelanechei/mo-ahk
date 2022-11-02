@@ -31,8 +31,12 @@ sleep 1
 Send ^!+d ;ctrl alt shift  s -> [ripple delete]
 return
 
-;F2::
-;return
+;SELECT CLIP AT PLAYHEAD AND DELETE
+F2::
+Send d
+sleep 10
+Send x
+Return
 
 ;F3::
 ;return
@@ -106,7 +110,7 @@ return
 ;ctrl numpad2 -> Mapped to mouse
 ^Numpad2::switchToFileExplorer()
 ;ctrl numpad3 -> Mapped to mouse
-;^Numpad3::switchToChrome()
+^Numpad3::switchToChrome()
 ;ctrl numpad4 -> Mapped to mouse
 ^Numpad4::switchToAsana()
 ;ctrl numpad5 -> Mapped to mouse
@@ -146,12 +150,26 @@ return
 
 
 ;----------------------------------------------------------------------
+;OPEN SOUND SETTINGS
+^+F12::
+SendInput #r
+Clipboard := "control mmsys.cpl sounds"
+Sleep, 50
+SendInput, ^v
+SendInput, {Enter}
+return
+;OPEN SOUND SETTINGS - END  
+;----------------------------------------------------------------------
+
+
+;----------------------------------------------------------------------
 ;OPEN PROJECT AT CURSOR
 ^F2::
 BlockInput, MouseMove ;Block mouse movement
 CoordMode, Mouse, Relative
 ;Open "Main" project folder
-Click, 2
+SendInput, {LButton}
+SendInput, {LButton}
 ;Wait for File Explorer Window to be active
 WinWaitActive , ahk_class CabinetWClass, ,2
 ;Wait a little longer for File Explorer GUI to load for ImageSearch
@@ -181,7 +199,7 @@ Else
 ;tippy("Cursor over Project Files Folder", 1) ;DEBUGGING
 ;Open "Project Files" folder
 Click, 2
-Sleep, 100
+Sleep, 200
 ;Search for Premiere Pro Project
 if (findPremiereProFileImg() == 0)
 {
