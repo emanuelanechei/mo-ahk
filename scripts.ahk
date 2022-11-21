@@ -150,17 +150,72 @@ return
 
 
 ;----------------------------------------------------------------------
-;OPEN SOUND SETTINGS
+;SET MONITOR AS DEFAULT PLAYBACK DEVICE - Start
 ^+F12::
+BlockInput, MouseMove ;Block mouse movement
+CoordMode, Mouse, Window
 SendInput #r
 Clipboard := "control mmsys.cpl sounds"
-Sleep, 50
+Sleep, 100 ;Wait for run prompt to load
 SendInput, ^v
 SendInput, {Enter}
+Sleep, 600 ;Wait for Sounds Window to load
+MouseMove, 375, 164, 0 ;Bring mouse to scroll bar
+MouseClickDrag, Left, , , 375, 310, 0 ;Scroll down - Because X1, Y1 omitted, fucntion uses mouses current position
+Sleep, 200 ;Wait after scroll
+ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370, *2 C:\mo-ahk\support-files\monitor-playback-device.png
+if (ErrorLevel == 0)
+{
+    ;Move mouse to where the playback device was found
+    MouseMove, OutputVarX-30, OutputVarY-30, 0
+}
+Else if (ErrorLevel == 1)
+{
+    tippy("Unable to find Project File Folder image", 2)
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
+Else
+{
+    tippy("Problem prevented Project File Folder search", 2)
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
+SendInput, {LButton} ;Select Monitor playback device
+MouseMove, 250, 395, 0 ;Move mouse to "Set Default" button
+SendInput, {LButton} ;Set monitor as the default playback device
+MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
+SendInput, {LButton} ;Select Monitor playback device
+BlockInput, MouseMoveOff ;Enable mouse movement
 return
-;OPEN SOUND SETTINGS - END  
+
+
+;SET MONITOR AS DEFAULT PLAYBACK DEVICE - End
 ;----------------------------------------------------------------------
 
+;----------------------------------------------------------------------
+;SET HEADSET AS DEFAULT PLAYBACK DEVICE - Start
+^+F11::
+BlockInput, MouseMove ;Block mouse movement
+CoordMode, Mouse, Window
+SendInput #r
+Clipboard := "control mmsys.cpl sounds"
+Sleep, 100 ;Wait for run prompt to load
+SendInput, ^v
+SendInput, {Enter}
+Sleep, 600 ;Wait for Sounds Window to load
+MouseMove, 60, 120, 0 ;Move mouse to headset playback device
+SendInput, {LButton} ;Select headset playback device
+MouseMove, 250, 395, 0 ;Move mouse to "Set Default" button
+SendInput, {LButton} ;Set monitor as the default playback device
+MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
+SendInput, {LButton} ;Select Monitor playback device
+BlockInput, MouseMoveOff ;Enable mouse movement
+return
+
+
+;SET HEADSET AS DEFAULT PLAYBACK DEVICE - End
+;----------------------------------------------------------------------
 
 ;----------------------------------------------------------------------
 ;OPEN PROJECT AT CURSOR
