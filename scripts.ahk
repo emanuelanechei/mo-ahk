@@ -28,28 +28,31 @@ Menu, Tray, Icon, shell32.dll, 283 ; this changes the tray icon to a little keyb
 F1::
 Send ^!s ;ctrl alt s -> [select clip at playhead]
 sleep 1
-Send ^!+d ;ctrl alt shift  s -> [ripple delete]
+Send ^!+d ;ctrl alt shift  d -> [ripple delete]
 return
 
-;SELECT CLIP AT PLAYHEAD AND DELETE
+;DELETE SINGLE CLIP AT CURSOR (W/ LINKED AUDIO)
+;KNOWN FLAWS
+;   - If the clip has a speed ramp and the speed ramp handle is clicked the clip doesn't delete
 F2::
-Send d
-sleep 10
-Send x
-Return
+prFocus("timeline") ;This will bring focus to the timeline
+send, ^+a ;ctrl shift a -> [deselect all]
+send, v ;[selection tool]
+send, {lbutton}
+send, {Delete} ;[clear]
+return
 
+;SEARCH EFFECTS PANEL
 ;F3::
-;return
+send, ^!+7 ;[focus on effect panel]
+sendinput, ^b ;[select find box]
+return
 
 ;CUT ALL UNLOCKED LAYERS AT CURSOR
 ;KNOWN FLAWS 
 ;   - Doesn't select caption tracks smh
 F4::
 ;instant cut at cursor (UPON KEY RELEASE) -- super useful! even respects snapping!
-;note to self, move this to premiere_functions already
-;this is NOT suposed to stop the video playing when you use it, but now it does for some reason....
-;keywait, F4
-;tooltip, |
 send, c ;[razor tool]
 send, {shift down} ;makes the razor tool affect all (unlocked) tracks
 keywait, F4 ;waits for the F4 to be released
@@ -72,7 +75,7 @@ return
 ;F8::
 ;return
 
-;DELETE SINGLE CLIP AT CURSOR
+;DELETE SINGLE CLIP AT CURSOR (W/O LINKED AUDIO)
 F9::
 prFocus("timeline") ;This will bring focus to the timeline
 send, ^+a ;ctrl shift a -> [deselect all]
@@ -89,11 +92,9 @@ return
 ;F11::
 ;return
 
-;SEARCH EFFECTS PANEL
-F12::
-send, ^!+7 ;[focus on effect panel]
-sendinput, ^b ;[select find box]
-return
+
+;F12::
+;return
 
 
 ;----------------------------------------------;
@@ -156,36 +157,61 @@ BlockInput, MouseMove ;Block mouse movement
 CoordMode, Mouse, Window
 SendInput #r
 Clipboard := "control mmsys.cpl sounds"
-Sleep, 100 ;Wait for run prompt to load
+Sleep, 200 ;Wait for run prompt to load
 SendInput, ^v
 SendInput, {Enter}
 Sleep, 600 ;Wait for Sounds Window to load
 MouseMove, 375, 164, 0 ;Bring mouse to scroll bar
 MouseClickDrag, Left, , , 375, 310, 0 ;Scroll down - Because X1, Y1 omitted, fucntion uses mouses current position
 Sleep, 200 ;Wait after scroll
-ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370, *2 C:\mo-ahk\support-files\monitor-playback-device.png
+ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370,  C:\mo-ahk\support-files\monitor-playback-device.png
 if (ErrorLevel == 0)
 {
     ;Move mouse to where the playback device was found
-    MouseMove, OutputVarX-30, OutputVarY-30, 0
+    MouseMove, OutputVarX+5, OutputVarY+5, 0
 }
 Else if (ErrorLevel == 1)
 {
-    tippy("Unable to find Project File Folder image", 2)
-    BlockInput, MouseMoveOff ;Enable mouse movement
-    return
+    ;Unable to find image, try the "Device already selected" image
+    ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370, C:\mo-ahk\support-files\monitor-playback-device-selected.png
+    if (ErrorLevel == 0)
+    {
+        ;Move mouse to where the playback device was found
+        MouseMove, OutputVarX+5, OutputVarY+5, 0
+    }
+    Else if (ErrorLevel == 1)
+    {
+        tippy("Unable to find image.", 1)
+        MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
+        SendInput, {LButton} ;Select Monitor playback device
+        BlockInput, MouseMoveOff ;Enable mouse movement
+        return
+    }
+    Else
+    {
+        MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
+        SendInput, {LButton} ;Select Monitor playback device
+        BlockInput, MouseMoveOff ;Enable mouse movement
+        return
+    }
+    
 }
 Else
 {
-    tippy("Problem prevented Project File Folder search", 2)
+    tippy("Problem prevented Project File Folder search", 1)
+    MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
+    SendInput, {LButton} ;Select Monitor playback device
     BlockInput, MouseMoveOff ;Enable mouse movement
     return
 }
+
+
 SendInput, {LButton} ;Select Monitor playback device
 MouseMove, 250, 395, 0 ;Move mouse to "Set Default" button
 SendInput, {LButton} ;Set monitor as the default playback device
 MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
 SendInput, {LButton} ;Select Monitor playback device
+
 BlockInput, MouseMoveOff ;Enable mouse movement
 return
 
@@ -227,6 +253,8 @@ SendInput, {LButton}
 SendInput, {LButton}
 ;Wait for File Explorer Window to be active
 WinWaitActive , ahk_class CabinetWClass, ,2
+;Move mouse to ensure the projects folder isn't highlighted (This ruins the image search)
+MouseMove, 320, 10, 0
 ;Wait a little longer for File Explorer GUI to load for ImageSearch
 Sleep, 200 
 ;tippy("Correct window is active", 2) ;DEBUGGING
@@ -235,7 +263,7 @@ ImageSearch, OutputVarX, OutputVarY, 0, 0, 410, 510, *2 C:\mo-ahk\support-files\
 if (ErrorLevel == 0)
 {
     ;Move mouse to where the project file was found
-    MouseMove, OutputVarX+10, OutputVarY+10, 0
+    MouseMove, OutputVarX+50, OutputVarY+10, 0
     ;tippy("cursor over Project Files Folder", 2) ;DEBUGGING
     ;MsgBox, found image at x: %OutputVarX% and y: %OutputVarY% ;DEBUGGING
 }
@@ -282,6 +310,8 @@ Sleep, 10
 Click, 2
 ;Wait for File Explorer Window to be active
 WinWaitActive , ahk_class CabinetWClass, ,2
+;Move mouse to ensure the projects folder isn't highlighted (This ruins the image search)
+MouseMove, 320, 10, 0
 ;Wait a little longer for File Explorer GUI to load for ImageSearch
 Sleep, 200 
 ;tippy("Correct window is active", 2) ;DEBUGGING
@@ -309,7 +339,7 @@ Else
 ;Open the "Projects folder"
 Click, 2
 ;Wait for folder to open
-Sleep, 100
+Sleep, 250
 ;Search for Premiere Pro Project
 if (findPremiereProFileImg() == 0)
 {
@@ -324,60 +354,6 @@ if (findPremiereProFileImg() == 0)
     SendInput {Enter}
     
 }
-BlockInput, MouseMoveOff ;Enable mouse movement
-Return
-;----------------------------------------------------------------------
-
-
-;----------------------------------------------------------------------
-;RENAME, OPEN, & IMPORT PREMIERE PROJECT
-^+!F2::
-BlockInput, MouseMove ;Block mouse movement
-CoordMode, Mouse, Relative
-;Select "Main" project folder
-SendInput {LButton}
-;Highlight & copy the name of the "Main" project folder
-SendInput {F2}
-SendInput ^c
-Sleep, 10
-;Open "Main" project folder
-SendInput {LButton}
-SendInput {LButton}
-;Wait for window to open
-;Keeping this high allows time for window to open as to not click on an laready open window of explorer
-Sleep, 1200
-;Move Mouse to location of "Project Files" folder
-MouseMove, 200, 305, 0
-;tippy("cursor over Project Files Folder", 2) ;DEBUGGING
-Sleep, 100
-;Open the "Projects folder"
-SendInput {LButton}
-SendInput {LButton}
-;Move Mouse to location of Premiere Pro Project file
-MouseMove, 200, 215, 0
-Sleep, 50
-;tippy("cursor over Premiere Pro Project file", 2) ;DEBUGGING
-;Select, highlight, and rename Premiere Pro project
-SendInput {LButton}
-SendInput {F2}
-Sleep, 10
-SendInput ^v
-SendInput {Enter}
-;Open "Project Files" folder
-SendInput {Enter}
-;Wait 15s for Premiere Project to open
-;Sleep, 15000
-;Move Mouse to & select "Workspaces" icon
-;MouseMove, 1810, 70, 0
-;SendInput {LButton}
-;Sleep, 10
-
-;Move Mouse to & select "Vertical Video" Workspace
-;MouseMove, 20, 465, 0
-;SendInput {LButton}
-;Sleep, 10
-
-;tippy("Cursor over Workspaces icon", 2)
 BlockInput, MouseMoveOff ;Enable mouse movement
 Return
 ;----------------------------------------------------------------------
