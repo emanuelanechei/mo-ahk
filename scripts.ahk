@@ -157,7 +157,12 @@ BlockInput, MouseMove ;Block mouse movement
 CoordMode, Mouse, Window
 SendInput #r
 Clipboard := "control mmsys.cpl sounds"
-Sleep, 200 ;Wait for run prompt to load
+WinWaitActive , ahk_class #32770, ,2 ;Wait for Windows Run Panel to be active - Timeout after 2s
+if (ErrorLevel == 1){
+    tippy("Timed out.", 1)
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
 SendInput, ^v
 SendInput, {Enter}
 Sleep, 600 ;Wait for Sounds Window to load
@@ -226,7 +231,12 @@ BlockInput, MouseMove ;Block mouse movement
 CoordMode, Mouse, Window
 SendInput #r
 Clipboard := "control mmsys.cpl sounds"
-Sleep, 100 ;Wait for run prompt to load
+WinWaitActive , ahk_class #32770, ,2 ;Wait for Windows Run Panel to be active - Timeout after 2s
+if (ErrorLevel == 1){
+    tippy("Timed out.", 1)
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
 SendInput, ^v
 SendInput, {Enter}
 Sleep, 600 ;Wait for Sounds Window to load
@@ -283,8 +293,10 @@ Else
 ;Open "Project Files" folder
 Click, 2
 Sleep, 200
+;Move mouse to ensure the projects folder isn't highlighted (This ruins the image search)
+MouseMove, 320, 10, 0
 ;Search for Premiere Pro Project
-if (findPremiereProFileImg() == 0)
+if (findPremiereProFileImg1() == 0)
 {
     ;Open Premiere Pro Project
     Click, 2
@@ -340,8 +352,10 @@ Else
 Click, 2
 ;Wait for folder to open
 Sleep, 250
+;Move mouse to ensure the projects folder isn't highlighted (This ruins the image search)
+MouseMove, 320, 10, 0
 ;Search for Premiere Pro Project
-if (findPremiereProFileImg() == 0)
+if (findPremiereProFileImg1() == 0)
 {
     ;tippy("cursor over Premiere Pro Project file", 2) ;DEBUGGING
     ;Select, highlight, and rename Premiere Pro project
@@ -357,3 +371,47 @@ if (findPremiereProFileImg() == 0)
 BlockInput, MouseMoveOff ;Enable mouse movement
 Return
 ;----------------------------------------------------------------------
+
+
+;----------------------------------------------------------------------
+;OPEN CHROME AND WORK TABS (TSheets, Caledar, Gmail)
+^+F10::
+BlockInput, MouseMove ;Block mouse movement
+CoordMode, Mouse, Relative
+
+;Run PM Chrome
+MouseMove 2540, 1050, 0
+SendInput {LButton}
+
+WinWaitActive , ahk_exe chrome.exe, ,2 ;Wait for Chrome Window to be active - Timeout after 2s
+if (ErrorLevel == 1){
+    tippy("Chrome didn't open.", 1)
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
+
+;Open Tsheets Bookmark
+MouseMove 50, 90, 0
+SendInput {LButton}
+SendInput ^t
+Sleep 50
+;tippy("Tsheets opened", 0.5) ;DEBUGGING
+;Open Calendar Bookmark
+MouseMove 150, 90, 0
+SendInput {LButton}
+SendInput ^t
+Sleep 50
+;tippy("Calendar opened", 0.5) ;DEBUGGING
+;Open Gmail Bookmark
+MouseMove 220, 90, 0
+SendInput {LButton}
+Sleep 50
+;tippy("Gmail opened", 0.5) ;DEBUGGING
+
+;Select TSheets Tab
+MouseMove 75, 25, 0
+SendInput {LButton} 
+;ippy("Tsheets selected", 0.5) ;DEBUGGING
+
+BlockInput, MouseMoveOff ;Enable mouse movement
+Return
