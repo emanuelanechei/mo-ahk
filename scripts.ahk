@@ -166,10 +166,55 @@ if (ErrorLevel == 1){
 SendInput, ^v
 SendInput, {Enter}
 Sleep, 600 ;Wait for Sounds Window to load
-MouseMove, 375, 164, 0 ;Bring mouse to scroll bar
-MouseClickDrag, Left, , , 375, 310, 0 ;Scroll down - Because X1, Y1 omitted, fucntion uses mouses current position
-Sleep, 200 ;Wait after scroll
-ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370,  C:\mo-ahk\support-files\monitor-playback-device.png
+
+; FOR CURVED MONITOR
+    ; MouseMove, 375, 164, 0 ;Bring mouse to scroll bar
+    ; MouseClickDrag, Left, , , 375, 310, 0 ;Scroll down - Because X1, Y1 omitted, fucntion uses mouses current position
+    ; Sleep, 200 ;Wait after scroll
+    ; ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370,  C:\mo-ahk\support-files\curved-monitor-playback-device.png
+    ; if (ErrorLevel == 0)
+    ; {
+    ;     ;Move mouse to where the playback device was found
+    ;     MouseMove, OutputVarX+5, OutputVarY+5, 0
+    ; }
+    ; Else if (ErrorLevel == 1)
+    ; {
+    ;     ;Unable to find image, try the "Device already selected" image
+    ;     ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370, C:\mo-ahk\support-files\curved-monitor-playback-device-selected.png
+    ;     if (ErrorLevel == 0)
+    ;     {
+    ;         ;Move mouse to where the playback device was found
+    ;         MouseMove, OutputVarX+5, OutputVarY+5, 0
+    ;     }
+    ;     Else if (ErrorLevel == 1)
+    ;     {
+    ;         tippy("Unable to find image.", 1)
+    ;         MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
+    ;         SendInput, {LButton} ;Select Monitor playback device
+    ;         BlockInput, MouseMoveOff ;Enable mouse movement
+    ;         return
+    ;     }
+    ;     Else
+    ;     {
+    ;         MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
+    ;         SendInput, {LButton} ;Select Monitor playback device
+    ;         BlockInput, MouseMoveOff ;Enable mouse movement
+    ;         return
+    ;     }
+        
+    ; }
+    ; Else
+    ; {
+    ;     tippy("Problem prevented Project File Folder search", 1)
+    ;     MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
+    ;     SendInput, {LButton} ;Select Monitor playback device
+    ;     BlockInput, MouseMoveOff ;Enable mouse movement
+    ;     return
+    ; }
+
+
+; FOR FLAT MONITOR
+ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370,  C:\mo-ahk\support-files\flat-monitor-playback-device.png
 if (ErrorLevel == 0)
 {
     ;Move mouse to where the playback device was found
@@ -178,7 +223,7 @@ if (ErrorLevel == 0)
 Else if (ErrorLevel == 1)
 {
     ;Unable to find image, try the "Device already selected" image
-    ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370, C:\mo-ahk\support-files\monitor-playback-device-selected.png
+    ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370, C:\mo-ahk\support-files\flat-monitor-playback-device-selected.png
     if (ErrorLevel == 0)
     {
         ;Move mouse to where the playback device was found
@@ -209,7 +254,6 @@ Else
     BlockInput, MouseMoveOff ;Enable mouse movement
     return
 }
-
 
 SendInput, {LButton} ;Select Monitor playback device
 MouseMove, 250, 395, 0 ;Move mouse to "Set Default" button
