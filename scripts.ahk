@@ -155,6 +155,7 @@ return
 ^+F12::
 BlockInput, MouseMove ;Block mouse movement
 CoordMode, Mouse, Window
+MouseGetPos, mousePosX, mousePosY ;Save current mouse position
 SendInput #r
 Clipboard := "control mmsys.cpl sounds"
 WinWaitActive , ahk_class #32770, ,2 ;Wait for Windows Run Panel to be active - Timeout after 2s
@@ -165,7 +166,12 @@ if (ErrorLevel == 1){
 }
 SendInput, ^v
 SendInput, {Enter}
-Sleep, 600 ;Wait for Sounds Window to load
+WinWaitActive , ahk_exe rundll32.exe, ,2 ;Wait for Sound Window to be active - Timeout after 2s
+if (ErrorLevel == 1){
+    tippy("Timed out.", 1)
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
 
 ; FOR CURVED MONITOR
     ; MouseMove, 375, 164, 0 ;Bring mouse to scroll bar
@@ -260,7 +266,7 @@ MouseMove, 250, 395, 0 ;Move mouse to "Set Default" button
 SendInput, {LButton} ;Set monitor as the default playback device
 MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
 SendInput, {LButton} ;Select Monitor playback device
-
+MouseMove, mousePosX, mousePosY, 0 ;Move mouse back to saved position
 BlockInput, MouseMoveOff ;Enable mouse movement
 return
 
@@ -273,6 +279,7 @@ return
 ^+F11::
 BlockInput, MouseMove ;Block mouse movement
 CoordMode, Mouse, Window
+MouseGetPos, mousePosX, mousePosY ;Save current mouse position
 SendInput #r
 Clipboard := "control mmsys.cpl sounds"
 WinWaitActive , ahk_class #32770, ,2 ;Wait for Windows Run Panel to be active - Timeout after 2s
@@ -283,13 +290,19 @@ if (ErrorLevel == 1){
 }
 SendInput, ^v
 SendInput, {Enter}
-Sleep, 600 ;Wait for Sounds Window to load
+WinWaitActive , ahk_exe rundll32.exe, ,2 ;Wait for Sound Window to be active - Timeout after 2s
+if (ErrorLevel == 1){
+    tippy("Timed out.", 1)
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
 MouseMove, 60, 120, 0 ;Move mouse to headset playback device
 SendInput, {LButton} ;Select headset playback device
 MouseMove, 250, 395, 0 ;Move mouse to "Set Default" button
 SendInput, {LButton} ;Set monitor as the default playback device
 MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
 SendInput, {LButton} ;Select Monitor playback device
+MouseMove, mousePosX, mousePosY, 0 ;Move mouse back to saved position
 BlockInput, MouseMoveOff ;Enable mouse movement
 return
 
