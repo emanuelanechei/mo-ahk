@@ -149,13 +149,15 @@ return
 ;INSTANT APPLICATION SWITCHER KEYS - End
 ;----------------------------------------------------------------------
 
-
 ;----------------------------------------------------------------------
 ;SET MONITOR AS DEFAULT PLAYBACK DEVICE - Start
 ^+F12::
-BlockInput, MouseMove ;Block mouse movement
 CoordMode, Mouse, Window
+<<<<<<< Updated upstream
 MouseGetPos, mousePosX, mousePosY ;Save current mouse position
+=======
+BlockInput, MouseMove ;Block mouse movement
+>>>>>>> Stashed changes
 SendInput #r
 Clipboard := "control mmsys.cpl sounds"
 WinWaitActive , ahk_class #32770, ,2 ;Wait for Windows Run Panel to be active - Timeout after 2s
@@ -382,7 +384,7 @@ WinWaitActive , ahk_class CabinetWClass, ,2
 ;Move mouse to ensure the projects folder isn't highlighted (This ruins the image search)
 MouseMove, 320, 10, 0
 ;Wait a little longer for File Explorer GUI to load for ImageSearch
-Sleep, 200 
+Sleep, 350 
 ;tippy("Correct window is active", 2) ;DEBUGGING
 ;Search for "Project Files" folder
 ImageSearch, OutputVarX, OutputVarY, 0, 0, 410, 510, *2 C:\mo-ahk\support-files\project-files-folder.png
