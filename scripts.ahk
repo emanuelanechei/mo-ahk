@@ -153,11 +153,8 @@ return
 ;SET MONITOR AS DEFAULT PLAYBACK DEVICE - Start
 ^+F12::
 CoordMode, Mouse, Window
-<<<<<<< Updated upstream
 MouseGetPos, mousePosX, mousePosY ;Save current mouse position
-=======
 BlockInput, MouseMove ;Block mouse movement
->>>>>>> Stashed changes
 SendInput #r
 Clipboard := "control mmsys.cpl sounds"
 WinWaitActive , ahk_class #32770, ,2 ;Wait for Windows Run Panel to be active - Timeout after 2s
