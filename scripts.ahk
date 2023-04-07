@@ -348,7 +348,7 @@ Else
 ;tippy("Cursor over Project Files Folder", 1) ;DEBUGGING
 ;Open "Project Files" folder
 Click, 2
-Sleep, 200
+Sleep, 350
 ;Move mouse to ensure the projects folder isn't highlighted (This ruins the image search)
 MouseMove, 320, 10, 0
 ;Search for Premiere Pro Project
