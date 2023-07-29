@@ -295,12 +295,53 @@ if (ErrorLevel == 1){
     BlockInput, MouseMoveOff ;Enable mouse movement
     return
 }
-MouseMove, 60, 120, 0 ;Move mouse to headset playback device
-SendInput, {LButton} ;Select headset playback device
+; FOR HEADSET
+ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370,  C:\mo-ahk\support-files\headset-playback-device.png
+if (ErrorLevel == 0)
+{
+    ;Move mouse to where the playback device was found
+    MouseMove, OutputVarX+5, OutputVarY+5, 0
+}
+Else if (ErrorLevel == 1)
+{
+    ;Unable to find image, try the "Device already selected" image
+    ImageSearch, OutputVarX, OutputVarY, 25, 90, 295, 370, C:\mo-ahk\support-files\headset-playback-device-selected.png
+    if (ErrorLevel == 0)
+    {
+        ;Move mouse to where the playback device was found
+        MouseMove, OutputVarX+5, OutputVarY+5, 0
+    }
+    Else if (ErrorLevel == 1)
+    {
+        tippy("Unable to find image.", 1)
+        MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
+        SendInput, {LButton} ;Select Headset playback device
+        BlockInput, MouseMoveOff ;Enable mouse movement
+        return
+    }
+    Else
+    {
+        MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
+        SendInput, {LButton} ;Select Headset playback device
+        BlockInput, MouseMoveOff ;Enable mouse movement
+        return
+    }
+    
+}
+Else
+{
+    tippy("Problem prevented Project File Folder search", 1)
+    MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
+    SendInput, {LButton} ;Select Headset playback device
+    BlockInput, MouseMoveOff ;Enable mouse movement
+    return
+}
+
+SendInput, {LButton} ;Select Headset playback device
 MouseMove, 250, 395, 0 ;Move mouse to "Set Default" button
-SendInput, {LButton} ;Set monitor as the default playback device
+SendInput, {LButton} ;Set Headset as the default playback device
 MouseMove, 395, 15, 0 ;Move mouse to "Close Window X" button
-SendInput, {LButton} ;Select Monitor playback device
+SendInput, {LButton} ;Select Headset playback device
 MouseMove, mousePosX, mousePosY, 0 ;Move mouse back to saved position
 BlockInput, MouseMoveOff ;Enable mouse movement
 return
@@ -322,7 +363,7 @@ WinWaitActive , ahk_class CabinetWClass, ,2
 ;Move mouse to ensure the projects folder isn't highlighted (This ruins the image search)
 MouseMove, 320, 10, 0
 ;Wait a little longer for File Explorer GUI to load for ImageSearch
-Sleep, 200 
+Sleep, 350 
 ;tippy("Correct window is active", 2) ;DEBUGGING
 ;Search for "Project Files" folder
 ImageSearch, OutputVarX, OutputVarY, 0, 0, 410, 510, *2 C:\mo-ahk\support-files\project-files-folder.png
@@ -348,7 +389,7 @@ Else
 ;tippy("Cursor over Project Files Folder", 1) ;DEBUGGING
 ;Open "Project Files" folder
 Click, 2
-Sleep, 350
+Sleep, 400
 ;Move mouse to ensure the projects folder isn't highlighted (This ruins the image search)
 MouseMove, 320, 10, 0
 ;Search for Premiere Pro Project
